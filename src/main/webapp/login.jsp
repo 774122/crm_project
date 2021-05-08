@@ -53,7 +53,6 @@ request.getContextPath() + "/";
                 type:"post",
                 dataType:"json",
                 success:function (resp) {
-                    alert(resp.success + "   "+ resp.msg);
                     if(resp.success=="1"){
                         $("#msg").html(" ");
                         window.location.href = resp.href;
@@ -79,7 +78,7 @@ request.getContextPath() + "/";
 			<div class="page-header">
 				<h1>登录</h1>
 			</div>
-			<form action="workbench/index.html" class="form-horizontal" role="form">
+			<form action="workbench/index.jsp" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
 						<input class="form-control" type="text" placeholder="用户名" id="loginText">

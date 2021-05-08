@@ -49,13 +49,15 @@ public class UserController {
         User user = userService.login(loginAct, pwd, user_ip);
         if(null==user.getName()){
             throw new LoginException(user.getEmail());
+        }else{
+            request.getSession().setAttribute("user", user);
         }
-        System.out.println(user);
+        //System.out.println(user);
 
         map.put("success","1"); // 1 ： 登录成功 ； 0 ： 登录失败
         map.put("msg","0");  // msg为 0 说明没有异常
-        //mv.setViewName("forward:/workbench/index.html");
-        map.put("href","workbench/index.html");
+        //mv.setViewName("forward:/workbench/index.jsp");
+        map.put("href","workbench/index.jsp");
         return map;
     }
 

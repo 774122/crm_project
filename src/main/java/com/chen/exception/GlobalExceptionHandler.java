@@ -30,12 +30,12 @@ public class GlobalExceptionHandler {
         return result;
     }
 
-    @ExceptionHandler(value= Exception.class)
+    /*@ExceptionHandler(value= Exception.class)
     public ModelAndView doOtherException(Exception ex){
         ModelAndView mv = new ModelAndView();
         mv.addObject("tips","@ConretollerAdvice使用注解处理其他异常");
         mv.addObject("ex",ex);
         mv.setViewName("otherError");
         return mv;
-    }
+    }*/
 }
