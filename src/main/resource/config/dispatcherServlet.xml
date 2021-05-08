@@ -30,7 +30,7 @@
             <mvc:exclude-mapping path="/User/login.do"/>
             <bean class="com.chen.handler.UserInterceptor"/>
         </mvc:interceptor>
-<!--        <mvc:interceptor>
+<!--    <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <bean class="com.chen.handler.MyInterceptor2" />
         </mvc:interceptor>-->
