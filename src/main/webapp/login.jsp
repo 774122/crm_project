@@ -53,7 +53,13 @@ request.getContextPath() + "/";
                 type:"post",
                 dataType:"json",
                 success:function (resp) {
-                    $("#msg").html(resp.msg);
+                    alert(resp.success + "   "+ resp.msg);
+                    if(resp.success=="1"){
+                        $("#msg").html(" ");
+                        window.location.href = resp.href;
+                    }else if(resp.success == "0"){
+                        $("#msg").html(resp.msg);
+                    }
                 }
             })
         }

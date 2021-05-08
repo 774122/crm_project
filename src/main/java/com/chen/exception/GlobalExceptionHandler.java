@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
     public Map<String, String> doLoginException(Exception ex){
         Map<String,String> result = new HashMap<>();
         result.put("msg", ex.getMessage());
+        result.put("success", "0");
         return result;
     }
 
