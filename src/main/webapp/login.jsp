@@ -16,6 +16,10 @@ request.getContextPath() + "/";
     <script type="text/javascript">
         $(function () {
 
+            if(window.top!=window){
+                window.top.location=window.location
+            }
+
             $("#loginText").val("");
 
             $("#loginText").focus();   <!--页面加载完毕后自动获得焦点-->

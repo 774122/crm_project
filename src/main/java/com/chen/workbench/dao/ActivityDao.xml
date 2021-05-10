@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://maybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chen.workbench.dao.ActivityDao">
+    <insert id="addActivity">
+        insert into tbl_activity values(#{id},#{owner},#{name},#{startDate},
+        #{endDate},#{cost},#{description},#{createTime},#{createBy},
+        #{editTime},#{editBy})
+    </insert>
+
+    <select id="queryTotalNumByCondition" resultType="java.lang.Integer">
+        select count(*)
+
+        from tbl_activity a
+
+        join tbl_user b
+
+        on a.owner = b.id
+        <where>
+            <if test="name!=null and name != ''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+
+    </select>
+    <select id="pageSearchByCondition" resultType="com.chen.workbench.domain.Activity">
+        select a.id as id,b.name as owner,a.name as name,a.startDate as startDate,a.endDate as endDate
+
+        from tbl_activity a
+
+        join tbl_user b
+
+        on a.owner = b.id
+
+        <where>
+            <if test="name!=null and name != ''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+
+        order by a.createTime desc
+
+        limit #{index},#{pageSize}
+    </select>
+</mapper>

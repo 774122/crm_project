@@ -10,10 +10,12 @@
     <!--设置别名-->
     <typeAliases>
         <package name="com.chen.settings.domain"/>
+        <package name="com.chen.workbench.domain"/>
     </typeAliases>
 
     <mappers>
         <!--<mapper resource="com/chen/com.chen.settings.dao/StudentDao.xml"/>-->
         <package name="com.chen.settings.dao"/>
+        <package name="com.chen.workbench.dao" />
     </mappers>
 </configuration>

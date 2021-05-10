@@ -9,6 +9,7 @@ import com.mysql.jdbc.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,5 +48,11 @@ public class UserServiceImpl implements UserService {
             user.setEmail("ip地址受限！");
         }
         return user;
+    }
+
+    @Override
+    public List<User> getUserList() {
+        List<User> users = dao.getUserList();
+        return users;
     }
 }

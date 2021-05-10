@@ -7,6 +7,7 @@
 
     <!--组件扫描器：扫描Controller类-->
     <context:component-scan base-package="com.chen.settings.web.controller" />
+    <context:component-scan base-package="com.chen.workbench.web.controller"/>
 
     <!--视图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -28,7 +29,7 @@
             <!--指定请求的uri地址，可以使用**-->
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/User/login.do"/>
-            <bean class="com.chen.handler.UserInterceptor"/>
+            <bean class="com.chen.settings.web.Interceptor.UserInterceptor"/>
         </mvc:interceptor>
 <!--    <mvc:interceptor>
             <mvc:mapping path="/**"/>
