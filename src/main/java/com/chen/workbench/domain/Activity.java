@@ -1,5 +1,7 @@
 package com.chen.workbench.domain;
 
+import java.util.Objects;
+
 /**
  * @author chenhongchang
  * @date 2021/5/9 0009 - 上午 8:48
@@ -16,6 +18,24 @@ public class Activity {
     private String createBy;   // 创建人
     private String editTime;    // 修改时间
     private String editBy;      // 修改人
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return Objects.equals(id, activity.id) &&
+                Objects.equals(owner, activity.owner) &&
+                Objects.equals(name, activity.name) &&
+                Objects.equals(startDate, activity.startDate) &&
+                Objects.equals(endDate, activity.endDate) &&
+                Objects.equals(cost, activity.cost) &&
+                Objects.equals(description, activity.description) &&
+                Objects.equals(createTime, activity.createTime) &&
+                Objects.equals(createBy, activity.createBy) &&
+                Objects.equals(editTime, activity.editTime) &&
+                Objects.equals(editBy, activity.editBy);
+    }
 
     public Activity(String id, String owner, String name, String startDate, String endDate, String cost, String description, String createTime, String createBy, String editTime, String editBy) {
         this.id = id;

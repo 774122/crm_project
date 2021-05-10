@@ -10,7 +10,7 @@
     </insert>
 
     <select id="queryTotalNumByCondition" resultType="java.lang.Integer">
-        select count(*)
+        select count(a.id)
 
         from tbl_activity a
 
@@ -61,4 +61,38 @@
 
         limit #{index},#{pageSize}
     </select>
+
+    <delete id="delete">
+        delete from tbl_activity
+        where id in
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+            #{aid}
+        </foreach>
+    </delete>
+
+    <select id="findOneActivity" resultType="com.chen.workbench.domain.Activity">
+        select a.owner as id, b.name as owner, a.name, a.startDate, a.endDate, a.cost, a.description,
+                a.createBy, a.createTime, a.editBy, a.editTime
+
+        from tbl_activity a
+
+        join tbl_user b
+
+        on a.owner = b.id
+
+        where a.id= #{id}
+    </select>
+
+    <select id="selectOneAllField" resultType="com.chen.workbench.domain.Activity">
+        select * from tbl_activity where id = #{id}
+    </select>
+
+    <update id="updateActivityById">
+        update tbl_activity
+        set
+            owner = #{owner}, name = #{name}, startDate = #{startDate},
+            endDate = #{endDate}, cost = #{cost}, description = #{description},
+            editTime = #{editTime}, editBy = #{editBy}
+        where id = #{id}
+    </update>
 </mapper>

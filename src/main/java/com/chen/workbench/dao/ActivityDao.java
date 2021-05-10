@@ -11,7 +11,11 @@ import java.util.Map;
 public interface ActivityDao {
 
     int addActivity(Activity act);
-    int queryTotalNumByCondition();
+    int queryTotalNumByCondition(Map<String,Object> map);
     List<Activity> pageSearchByCondition(Map<String,Object> map);
+    int delete(String[] ids);
+    Activity findOneActivity(String id);
+    Activity selectOneAllField(String id);
+    int updateActivityById(Activity activity);
 
 }

@@ -12,6 +12,9 @@ public interface ActivityService {
 
     Map<String,Boolean> addActivity(Activity activity);
     PageNationVo<Activity> doPageSearch(Map<String,Object> map);
-    int selectAll();
+    boolean deleteActivity(String[] ids);
+    Activity findOne(String id);
+    Map<String,Boolean> updateActivity(Activity activity);
+
 
 }

@@ -11,7 +11,7 @@
 
     <!--视图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/" /><!--设置前缀-->
+        <!--<property name="prefix" value="" />-->
         <property name="suffix" value=".jsp" /><!--设置后缀-->
         <property name="order" value="1" /><!--设置优先级-->
     </bean>
