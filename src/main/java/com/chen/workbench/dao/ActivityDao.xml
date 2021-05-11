@@ -71,7 +71,7 @@
     </delete>
 
     <select id="findOneActivity" resultType="com.chen.workbench.domain.Activity">
-        select a.owner as id, b.name as owner, a.name, a.startDate, a.endDate, a.cost, a.description,
+        select a.id, b.name as owner, a.name, a.startDate, a.endDate, a.cost, a.description,
                 a.createBy, a.createTime, a.editBy, a.editTime
 
         from tbl_activity a

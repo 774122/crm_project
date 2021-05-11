@@ -4,6 +4,7 @@ import com.chen.vo.PageNationVo;
 import com.chen.workbench.dao.ActivityDao;
 import com.chen.workbench.dao.ActivityRemarkDao;
 import com.chen.workbench.domain.Activity;
+import com.chen.workbench.domain.ActivityRemark;
 import com.chen.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,6 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return map;
     }
-
-
 
     @Override
     public PageNationVo<Activity> doPageSearch(Map<String,Object> map) {
@@ -110,5 +109,34 @@ public class ActivityServiceImpl implements ActivityService {
             map.put("success",true);
         }else{map.put("success", false);}
         return map;
+    }
+
+    @Override
+    public List<ActivityRemark> getRemarkList(String activityId) {
+
+        List<ActivityRemark> list = r_dao.getRemarkList(activityId);
+
+        return list;
+    }
+
+    @Override
+    public Map<String, Boolean> deleteRemark(String remarkId) {
+        Map<String,Boolean> map = new HashMap<>();
+        int num = r_dao.deleteRemarkById(remarkId);
+        System.out.println(num);
+        if(num==1){
+            map.put("success",true);
+        }else{
+            map.put("success",false);
+        }
+        return map;
+    }
+
+    @Override
+    public ActivityRemark addRemark(ActivityRemark remark) {
+        int num = r_dao.addRemark(remark);
+        if(num==1){
+            return remark;
+        }else return null;
     }
 }

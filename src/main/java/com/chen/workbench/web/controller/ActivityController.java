@@ -9,6 +9,7 @@ import com.chen.utils.MD5Util;
 import com.chen.utils.UUIDUtil;
 import com.chen.vo.PageNationVo;
 import com.chen.workbench.domain.Activity;
+import com.chen.workbench.domain.ActivityRemark;
 import com.chen.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -140,5 +141,36 @@ public class ActivityController {
         System.out.println(act);
         //System.out.println(act.getId());
         return mv;
+    }
+
+    @RequestMapping(value = "/getRemarkListById.do")
+    @ResponseBody
+    public List<ActivityRemark> doGetRemarkList(String activityId){
+        //System.out.println(activityId);
+
+        List<ActivityRemark> act = activityService.getRemarkList(activityId);
+        //System.out.println(act);
+        return act;
+    }
+
+    @RequestMapping(value = "/deleteRemark.do")
+    @ResponseBody
+    public Map<String,Boolean> doDeleteRemark(String remarkId){
+        //System.out.println(remarkId);
+        Map<String,Boolean> flag = activityService.deleteRemark(remarkId);
+        //System.out.println(act);
+        return flag;
+    }
+
+    @RequestMapping(value = "/addRemark.do")
+    @ResponseBody
+    public ActivityRemark doAddRemark(ActivityRemark remark, HttpServletRequest request){
+        //System.out.println(remarkId);
+        remark.setId(UUIDUtil.getUUID());
+        remark.setCreateTime(DateTimeUtil.getSysTime());
+        remark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        ActivityRemark remark2 = activityService.addRemark(remark);
+        //System.out.println(act);
+        return remark2;
     }
 }
