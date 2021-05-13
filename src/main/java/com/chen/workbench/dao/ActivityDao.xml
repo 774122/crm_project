@@ -70,9 +70,24 @@
         </foreach>
     </delete>
 
+    <!--这个方法返回的是将owner属性匹配成用户名字的Activity对象-->
     <select id="findOneActivity" resultType="com.chen.workbench.domain.Activity">
         select a.id, b.name as owner, a.name, a.startDate, a.endDate, a.cost, a.description,
                 a.createBy, a.createTime, a.editBy, a.editTime
+
+        from tbl_activity a
+
+        join tbl_user b
+
+        on a.owner = b.id
+
+        where a.id= #{id}
+    </select>
+
+    <!--这个方法返回的Activity对象的owner属性是用户的名字,id属性是用户的ID而非活动的ID-->
+    <select id="findOneActivityIDOwner" resultType="com.chen.workbench.domain.Activity">
+        select b.id as id, b.name as owner, a.name, a.startDate, a.endDate, a.cost, a.description,
+        a.createBy, a.createTime, a.editBy, a.editTime
 
         from tbl_activity a
 
@@ -95,4 +110,49 @@
             editTime = #{editTime}, editBy = #{editBy}
         where id = #{id}
     </update>
+
+    <select id="findActivityByPartName" resultType="com.chen.workbench.domain.Activity">
+        select
+            a.id,
+            b.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+
+        from tbl_activity a
+        join tbl_user b
+        on a.owner = b.id
+        where a.id not in (select activityId from tbl_clue_activity_relation where clueId = #{clueId})
+        and a.name like '%' #{partName} '%'
+        order by a.createTime
+
+    </select>
+    <select id="findActivity" resultType="com.chen.workbench.domain.Activity">
+        select
+            a.id,
+            b.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user b
+        on a.owner = b.id
+        where a.id not in (select activityId from tbl_clue_activity_relation where clueId = #{clueId})
+        order by a.createTime
+    </select>
+
+    <select id="getListByPartName" resultType="com.chen.workbench.domain.Activity">
+        select
+            a.id,
+            b.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+
+        from tbl_activity a
+        join tbl_user b
+        on a.owner = b.id
+        where a.name like '%' #{aname} '%'
+        order by a.createTime
+    </select>
 </mapper>

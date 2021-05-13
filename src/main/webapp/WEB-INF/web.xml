@@ -63,4 +63,8 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    
+    <listener>
+        <listener-class>com.chen.web.SysInitListener</listener-class>
+    </listener>
 </web-app>

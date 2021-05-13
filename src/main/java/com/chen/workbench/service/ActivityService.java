@@ -18,11 +18,16 @@ public interface ActivityService {
     PageNationVo<Activity> doPageSearch(Map<String,Object> map);
     boolean deleteActivity(String[] ids);
     Activity findOne(String id);
+    Activity findOne2(String id);
     Map<String,Boolean> updateActivity(Activity activity);
 
     // 市场活动备注相关
     List<ActivityRemark> getRemarkList(String activityId);
     Map<String,Boolean> deleteRemark(String remarkId);
     ActivityRemark addRemark(ActivityRemark remark);
+    ActivityRemark updateRemark(ActivityRemark remark);
 
+    // 交易相关
+    List<Activity> findActivityByName(String partName,String clueId);
+    List<Activity> getActivityListByPartName(String aname);
 }

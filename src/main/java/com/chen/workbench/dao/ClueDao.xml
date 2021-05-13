@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.workbench.dao.ClueDao">
+
+    <insert id="saveClue" >
+        insert into tbl_clue(
+            id,
+            fullname,
+            appellation,
+            owner,
+            company,
+            job,
+            email,
+            phone,
+            website,
+            mphone,
+            state,
+            source,
+            createBy,
+            createTime,
+            editBy,
+            editTime,
+            description,
+            contactSummary,
+            nextContactTime,
+            address
+
+        )values (
+            #{id},
+            #{fullname},
+            #{appellation},
+            #{owner},
+            #{company},
+            #{job},
+            #{email},
+            #{phone},
+            #{website},
+            #{mphone},
+            #{state},
+            #{source},
+            #{createBy},
+            #{createTime},
+            #{editBy},
+            #{editTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime},
+            #{address}
+
+        )
+    </insert>
+
+    <select id="askTotalClueNumByCondition" resultType="java.lang.Integer">
+        select count(company)
+        from tbl_clue a
+        join tbl_user b
+        on a.owner = b.id
+        <where>
+            <if test="fullname!=null and fullname != ''">
+                a.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and a.source = #{source}
+            </if>
+            <if test="company != null and company != ''">
+                and a.company like '%' #{company} '%'
+            </if>
+            <if test="phone != null and phone != ''">
+                and a.phone like '%' #{phone} '%'
+            </if>
+            <if test="mphone != null and mphone != ''">
+                and a.mphone like '%' #{mphone} '%'
+            </if>
+            <if test="state != null and state != ''">
+                and a.state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="askClueByCondition" resultType="com.chen.workbench.domain.Clue">
+        select
+          a.id,
+          a.fullname,
+          a.appellation,
+          b.name as owner,
+          a.company,
+          a.phone,
+          a.mphone,
+          a.source,
+          a.state
+        from tbl_clue a
+        join tbl_user b
+        on a.owner = b.id
+        <where>
+            <if test="fullname!=null and fullname != ''">
+                a.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and a.source = #{source}
+            </if>
+            <if test="company != null and company != ''">
+                and a.company like '%' #{company} '%'
+            </if>
+            <if test="phone != null and phone != ''">
+                and a.phone like '%' #{phone} '%'
+            </if>
+            <if test="mphone != null and mphone != ''">
+                and a.mphone like '%' #{mphone} '%'
+            </if>
+            <if test="state != null and state != ''">
+                and a.state = #{state}
+            </if>
+        </where>
+        order by a.createTime desc
+        limit #{index},#{pageSize}
+    </select>
+    
+    <select id="getOneClueById" resultType="com.chen.workbench.domain.Clue">
+        select
+          a.id,
+          a.fullname,
+          a.appellation,
+          b.name as owner,
+          a.company,
+          a.job,
+          a.email,
+          a.phone,
+          a.website,
+          a.mphone,
+          a.state,
+          a.source,
+          a.createBy,
+          a.createTime,
+          a.editBy,
+          a.editTime,
+          a.description,
+          a.contactSummary,
+          a.nextContactTime,
+          a.address
+        from tbl_clue a
+        join tbl_user b
+        on a.owner = b.id
+        where a.id=#{id}
+    </select>
+
+    <select id="selectActivity" resultType="com.chen.workbench.domain.Activity">
+
+        select
+
+            c.id as id,
+            b.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+
+        from tbl_activity a
+        join tbl_user b
+        on a.owner = b.id
+        join tbl_clue_activity_relation c
+        on a.id = c.activityId
+
+        where c.clueId = #{clueId}
+
+    </select>
+
+    <delete id="deleteRelationById">
+        delete from tbl_clue_activity_relation
+        where id = #{car_id}
+    </delete>
+
+    <insert id="addActRelation">
+        insert into tbl_clue_activity_relation
+        values (#{id},#{clueId},#{activityId})
+    </insert>
+
+    <select id="getById" resultType="com.chen.workbench.domain.Clue">
+        select * from tbl_clue where id=#{clueID}
+    </select>
+
+    <delete id="delete">
+        delete from tbl_clue where id=#{clueId}
+    </delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

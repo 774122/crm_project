@@ -86,6 +86,13 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public Activity findOne2(String id) {
+        Activity act = dao.findOneActivityIDOwner(id);
+        return act;
+    }
+
+
+    @Override
     public Map<String, Boolean> updateActivity(Activity activity) {
         Map<String,Boolean> map = new HashMap<>();
         // 先根据id查询，若没有变动则不进行更新操作
@@ -103,7 +110,7 @@ public class ActivityServiceImpl implements ActivityService {
             return map;
         }
 
-        System.out.println(activity + "\n" +activity1);
+        //System.out.println(activity + "\n" +activity1);
         int result = dao.updateActivityById(activity);
         if(result==1){
             map.put("success",true);
@@ -123,7 +130,7 @@ public class ActivityServiceImpl implements ActivityService {
     public Map<String, Boolean> deleteRemark(String remarkId) {
         Map<String,Boolean> map = new HashMap<>();
         int num = r_dao.deleteRemarkById(remarkId);
-        System.out.println(num);
+        //System.out.println(num);
         if(num==1){
             map.put("success",true);
         }else{
@@ -139,4 +146,45 @@ public class ActivityServiceImpl implements ActivityService {
             return remark;
         }else return null;
     }
+
+    @Override
+    public ActivityRemark updateRemark(ActivityRemark remark) {
+        int num = r_dao.updateRemark(remark);
+        ActivityRemark mark = new ActivityRemark();
+        if(num==1){
+            mark.setCreateBy("true");
+            mark.setNoteContent(remark.getNoteContent());
+            mark.setEditTime(remark.getEditTime());
+            mark.setEditBy(remark.getEditBy());
+        }else{
+            mark.setNoteContent("false");
+        }
+        return mark;
+    }
+
+    @Override
+    public List<Activity> findActivityByName(String partName,String clueId) {
+        List<Activity> list;
+        if(/*null!=partName || */!"".equals(partName)) {
+            //System.out.println("根据名称检索");
+            Map<String,String> map = new HashMap<>();
+            map.put("partName",partName);
+            map.put("clueId",clueId);
+            list = dao.findActivityByPartName(map);
+            //System.out.println(list);
+        }else{
+            //System.out.println("执行空条件sql语句");
+            list = dao.findActivity(clueId);
+            //System.out.println(list);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Activity> getActivityListByPartName(String aname) {
+        List<Activity> list = dao.getListByPartName(aname);
+        return list;
+    }
+
+
 }

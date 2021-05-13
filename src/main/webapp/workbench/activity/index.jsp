@@ -113,15 +113,6 @@ request.getContextPath() + "/";
         $("#activityTableBody").on("click",$("input[name=cb]"),function () {
             // 选中状态的复选框数量和复选框总数量相等，则将全选框选中，反之将其取消选中
             $("#allCheck").prop("checked",$("input[name=cb]").length==$("input[name=cb]:checked").length)
-            /*var flag = true;
-            $.each($("input[name=cb]"),function (i,n) {
-                if(n.checked == false){flag = false}
-            })
-            if(flag){
-                $("#allCheck").prop("checked",this.checked)
-            }else{
-                $("#allCheck").prop("checked",this.)
-            }*/
         })
 
         //删除按钮绑定事件，删除市场活动，难点：批量删除；关联的市场活动备注表删除，一对多
@@ -169,6 +160,7 @@ request.getContextPath() + "/";
                 // 填充活动详细信息
                 var owner_act = "";
                 $.ajax({
+                    /*这个方法返回的Activity对象的owner属性是用户的名字,id属性是用户的ID而非活动的ID*/
                     url:"Activity/searchOne.do",
                     type:"get",
                     data:{"id":id},
@@ -179,7 +171,7 @@ request.getContextPath() + "/";
                         $("#edit-endTime").val(resp.endDate);
                         $("#edit-cost").val(resp.cost);
                         $("#edit-describe").val(resp.description);
-                        owner_act = resp.id;
+                        owner_act = resp.id;// 用户id
                     }
                 })
 
@@ -197,10 +189,8 @@ request.getContextPath() + "/";
                         $("#edit-marketActivityOwner").val(owner_act); //"{sessionScope.user.id}"
                     },
                 })
-
                 // 打开模态窗口
                 $("#editActivityModal").modal("show");
-
             }
         })
 
@@ -241,7 +231,7 @@ request.getContextPath() + "/";
                         $("#activityAddForm")[0].reset();
                         // 关闭添加操作的模态窗口
                         $("#editActivityModal").modal("hide");
-                    }else if(null==resp.success){
+                    }else if(null==resp.success){  // 其实这里只需要在前端判断一下数据是否有修改就行了，不需要走后台
                         $("#editActivityModal").modal("hide");
                     }else{
                         alert("市场信息修改失败！");

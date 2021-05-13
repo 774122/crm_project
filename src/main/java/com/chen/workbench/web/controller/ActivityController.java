@@ -123,7 +123,7 @@ public class ActivityController {
     @RequestMapping(value = "/searchOne.do")
     @ResponseBody
     public Activity doSearchOne(String id){
-        Activity act = activityService.findOne(id);
+        Activity act = activityService.findOne2(id);
         System.out.println(act.getId());
         return act;
     }
@@ -138,7 +138,7 @@ public class ActivityController {
 
         mv.addObject("info", act);
         mv.setViewName("../workbench/activity/detail");
-        System.out.println(act);
+        //System.out.println(act);
         //System.out.println(act.getId());
         return mv;
     }
@@ -172,5 +172,19 @@ public class ActivityController {
         ActivityRemark remark2 = activityService.addRemark(remark);
         //System.out.println(act);
         return remark2;
+    }
+
+    @RequestMapping(value = "/updateRemark.do")
+    @ResponseBody
+    public ActivityRemark doUpdateRemark(String id, String noteContent,HttpServletRequest request){
+        ActivityRemark remark = new ActivityRemark();
+        remark.setId(id);
+        remark.setNoteContent(noteContent);
+        remark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        remark.setEditTime(DateTimeUtil.getSysTime());
+        remark.setEditFlag("1");
+
+        ActivityRemark mark = activityService.updateRemark(remark);
+        return mark;
     }
 }

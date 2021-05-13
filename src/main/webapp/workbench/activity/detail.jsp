@@ -21,7 +21,7 @@ request.getContextPath() + "/";
 
 	$(function(){
 
-	    $("#detail-title").html("市场活动"+"${info.getName()}" + "<small>  "+"${info.getStartDate()}"+" ~ "+"${info.getEndDate()}"+"</small>");
+	    $("#detail-title").html("市场活动-"+"${info.getName()}" + "<small>  "+"${info.getStartDate()}"+" ~ "+"${info.getEndDate()}"+"</small>");
         $("#detail-owner").html("<b>"+ "${info.getOwner()}" +"</b>");
 	    $("#detail-name").html("<b>"+ "${info.getName()}" +"</b>");
 	    $("#detail-startDate").html("<b>"+ "${info.getStartDate()}" +"</b>");
@@ -65,15 +65,15 @@ request.getContextPath() + "/";
 			$(this).children("span").css("color","#E6E6E6");
 		});
 
-		//页面记载完毕后展现市场活动备注列表
-        showRemarkList();
-
         $("#remarkBody").on("mouseover",".remarkDiv",function(){
             $(this).children("div").children("div").show();
         })
         $("#remarkBody").on("mouseout",".remarkDiv",function(){
             $(this).children("div").children("div").hide();
         })
+
+        //页面记载完毕后展现市场活动备注列表
+        showRemarkList();
 
         $("#saveBtn").click(function () {
             $.ajax({
@@ -93,8 +93,8 @@ request.getContextPath() + "/";
                         html += '<div id="'+resp.id+'" class="remarkDiv" style="height: 60px;">';
                         html += '<img title="'+ resp.createBy +'" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
                         html += '<div style="position: relative; top: -40px; left: 40px;" >';
-                        html += '<h5>'+resp.noteContent+'</h5>';
-                        html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${info.getName()}</b> <small style="color: gray;"> '+ (resp.editFlag==0?resp.createTime:resp.editTime) +' 由'+(resp.editFlag==0?resp.createBy:resp.editBy)+'</small>';
+                        html += '<h5 id="e\''+resp.id+'\'">'+resp.noteContent+'</h5>';
+                        html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${info.getName()}</b> <small style="color: gray;" id="s'+ resp.id+'"> '+ (resp.editFlag==0?resp.createTime:resp.editTime) +' 由'+(resp.editFlag==0?resp.createBy:resp.editBy)+'</small>';
                         html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
                         html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
                         html += '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -113,6 +113,29 @@ request.getContextPath() + "/";
                 }
             })
         })
+
+        $("#updateRemarkBtn").click(function () {
+            var id = $("#remarkId").val();
+            $.ajax({
+                url:"Activity/updateRemark.do",
+                data:{
+                    "noteContent": $.trim($("#noteContent").val()),
+                    "id": id
+                },
+                type:"get",
+                dataType:"json",
+                success:function (resp) {
+                    if(resp.createBy=="true"){
+                        $("#e" + id).html(resp.noteContent)
+                        $("#s" + id).html(resp.editTime +" 由"+resp.editBy);
+                    }else{
+                        alert("备注修改失败")
+                    }
+                }
+            })
+
+            $("#editRemarkModal").modal("hide");
+        })
     });
 
 	function showRemarkList() {
@@ -129,41 +152,49 @@ request.getContextPath() + "/";
                     html += '<div id="'+n.id+'" class="remarkDiv" style="height: 60px;">';
                     html += '<img title="'+ n.createBy +'" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
                     html += '<div style="position: relative; top: -40px; left: 40px;" >';
-                    html += '<h5>'+n.noteContent+'</h5>';
-                    html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${info.getName()}</b> <small style="color: gray;"> '+ (n.editFlag==0?n.createTime:n.editTime) +' 由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
+                    html += '<h5 id="e'+n.id+'">'+n.noteContent+'</h5>';
+                    html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${info.getName()}</b> <small style="color: gray;" id="s'+ n.id+'"> '+ (n.editFlag==0?n.createTime:n.editTime) +' 由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
                     html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
-                    html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
+                    html += '<a class="myHref" href="javascript:void(0);" onclick="modifyRemark(\''+n.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
                     html += '&nbsp;&nbsp;&nbsp;&nbsp;';
                     html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
                     html += '</div>';
                     html += '</div>';
                     html += '</div>';
                 })
-
                 $("#remarkDiv").before(html);
             }
         })
-
     }
 
     function deleteRemark(id) {
-        //alert(id);
-        $.ajax({
-            url:"Activity/deleteRemark.do",
-            data:{"remarkId":id},
-            dataType:"json",
-            type:"get",
-            success:function (resp) {
-                if(resp.success){
-                    alert("Delete Success!");
-                    //showRemarkList();
-                    $("#"+id).remove();
-
-                }else{
-                    alert("删除备注失败！");
+	    if(confirm("确定删除备注吗？")){
+            $.ajax({
+                url:"Activity/deleteRemark.do",
+                data:{"remarkId":id},
+                dataType:"json",
+                type:"get",
+                success:function (resp) {
+                    if(resp.success){
+                        $("#"+id).remove();
+                    }else{
+                        alert("删除备注失败！");
+                    }
                 }
-            }
-        })
+            })
+        }else{return;}
+        //alert(id);
+    }
+
+    function modifyRemark(id) {
+	    // 获取备注的内容
+	    var note = $("#e"+id).html();
+	    // 将备注的内容填充到将要打开的模态窗口内
+	    $("#noteContent").val(note);
+	    // 将模态窗口中的id隐藏域赋值
+        $("#remarkId").val(id);
+        // 打开模态窗口
+        $("#editRemarkModal").modal("show");
     }
 	
 </script>
@@ -174,7 +205,7 @@ request.getContextPath() + "/";
 	<!-- 修改市场活动备注的模态窗口 -->
 	<div class="modal fade" id="editRemarkModal" role="dialog">
 		<%-- 备注的id --%>
-		<input type="hidden" id="remarkId">
+		<input type="hidden" id="remarkId"><%--隐藏的id值--%>
         <div class="modal-dialog" role="document" style="width: 40%;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -264,6 +295,7 @@ request.getContextPath() + "/";
 			<h4>备注</h4>
 		</div>
 
+        <%--放置备注内容--%>
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
