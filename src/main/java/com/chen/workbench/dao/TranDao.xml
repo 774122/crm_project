@@ -44,6 +44,41 @@
         )
     </insert>
 
+    <select id="selectTranById" resultType="com.chen.workbench.domain.Tran">
+        select
+              a.id,
+              b.name as owner,
+              a.money,
+              a.name,
+              a.expectedDate,
+              c.name as customerId,
+              a.stage,
+              a.type,
+              a.source,
+              d.name as activityId,
+              e.fullname as contactsId,
+              a.createBy,
+              a.createTime,
+              a.editTime,
+              a.editBy,
+              a.description,
+              a.contactSummary,
+              a.nextContactTime
+        from tbl_tran a
+        join tbl_user b
+        on a.owner=b.id
+        join tbl_customer c
+        on a.customerId=c.id
+        left join tbl_activity d
+        on a.activityId=d.id
+        left join tbl_contacts e
+        on a.contactsId=e.id
+        where a.id=#{id}
+    </select>
+
+    <update id="changeStage">
+        update tbl_tran set stage=#{stage},editBy=#{editBy},editTime=#{editTime} where id=#{id}
+    </update>
 </mapper>
 
 

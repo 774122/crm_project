@@ -9,18 +9,18 @@
     <context:component-scan base-package="com.chen.settings.web.controller" />
     <context:component-scan base-package="com.chen.workbench.web.controller"/>
 
+    <!--配置异常处理功能：需要两步-->
+    <context:component-scan base-package="com.chen.exception"/><!--以及注解驱动-->
+
+    <!--注解驱动-->
+    <mvc:annotation-driven />
+
     <!--视图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!--<property name="prefix" value="" />-->
         <property name="suffix" value=".jsp" /><!--设置后缀-->
         <property name="order" value="1" /><!--设置优先级-->
     </bean>
-
-    <!--注解驱动-->
-    <mvc:annotation-driven />
-
-    <!--配置异常处理功能：需要两步-->
-    <context:component-scan base-package="com.chen.exception"/><!--以及注解驱动-->
 
     <!--声明拦截器：拦截器可以有大于等于 0 个-->
     <!--框架中保存拦截器是一个ArrayList，会按照声明的先后顺序放进去，也按照先后顺序 执行-->
@@ -31,16 +31,12 @@
             <mvc:exclude-mapping path="/User/login.do"/>
             <bean class="com.chen.settings.web.Interceptor.UserInterceptor"/>
         </mvc:interceptor>
-<!--    <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <bean class="com.chen.handler.MyInterceptor2" />
-        </mvc:interceptor>-->
     </mvc:interceptors>
 
     <!--配置静态资源访问器:过滤请求，发现是静态资源请求就转发给服务器默认的servlet处理-->
     <mvc:default-servlet-handler />
     <!--静态资源请求处理方式 2：配置resource-->
-    <!--属性：mapping：匹配请求uri名 ；； location：匹配静态资源所在的牡蛎-->
+    <!--属性：mapping：匹配请求uri名 ；； location：匹配静态资源所在的目录-->
     <!--<mvc:resources mapping="/xxx" location="/static/**" />-->
     <!--最后，配置静态资源访问器，需要同时 声明注解驱动 -->
 

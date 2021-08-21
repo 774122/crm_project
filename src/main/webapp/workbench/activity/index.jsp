@@ -160,7 +160,8 @@ request.getContextPath() + "/";
                 // 填充活动详细信息
                 var owner_act = "";
                 $.ajax({
-                    /*这个方法返回的Activity对象的owner属性是用户的名字,id属性是用户的ID而非活动的ID*/
+                    /*这个方法返回的Activity对象的owner属性是用户的名字,
+                    id属性是用户的ID而非活动的ID*/
                     url:"Activity/searchOne.do",
                     type:"get",
                     data:{"id":id},

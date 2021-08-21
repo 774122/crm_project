@@ -4,6 +4,7 @@ import com.chen.vo.PageNationVo;
 import com.chen.workbench.domain.Activity;
 import com.chen.workbench.domain.Clue;
 import com.chen.workbench.domain.Tran;
+import com.chen.workbench.domain.TranHistory;
 
 import java.util.List;
 import java.util.Map;
@@ -14,5 +15,11 @@ import java.util.Map;
  */
 public interface TranService {
 
+    boolean save(Tran tran);
 
+    Tran getTranById(String id);
+
+    List<TranHistory> getTranHistoryByTranId(String tranId);
+
+    String changeStage(Tran tran);
 }

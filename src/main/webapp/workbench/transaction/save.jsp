@@ -1,26 +1,97 @@
 <%@ page import="com.chen.settings.domain.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.chen.settings.domain.DicValue" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
 String basePath = request.getScheme() + "://" +
 request.getServerName() + ":" +
 request.getServerPort() +
 request.getContextPath() + "/";
-%>
 
+    Map<String,String> map = (Map<String, String>)application.getAttribute("pMap");
+    Set<String> keySet = map.keySet();
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <base href="<%=basePath%>" />
 <meta charset="UTF-8">
-
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
+    <script type="text/javascript">
+
+        // 拼接 阶段-可能性 json
+        var json = {
+            <%
+            for(String s : keySet){
+            %>
+                "<%=s%>":<%=map.get(s)%>,
+            <%
+            }
+            %>
+        }
+
+        $(function () {
+
+            // 自动补全插件
+            $("#create-customerName").typeahead({
+                source: function (query, process) {
+                    $.get(
+                        "Customer/getCustomerName.do",
+                        { "name" : query },
+                        function (data) {
+                            //alert(data);
+
+                            // data格式：[{客户名称},{},{}]
+
+                            process(data);
+                        },
+                        "json"
+                    );
+                },
+                delay: 1500
+            });
+
+            // 日历控件
+            $(".time_up").datetimepicker({
+                minView:"month",
+                language:"zh-CN",
+                format:"yyyy-mm-dd",
+                autoclose:true,
+                todayBtn:true,
+                pickerPosition:"top-left"
+            });
+            // 日历控件
+            $(".time_down").datetimepicker({
+                minView:"month",
+                language:"zh-CN",
+                format:"yyyy-mm-dd",
+                autoclose:true,
+                todayBtn:true,
+                pickerPosition:"bottom-left"
+            });
+            
+            // 绑定阶段与可能性的对应关系
+            $("#create-transactionStage").change(function () {
+                var stage = this.value;
+                var possibilty = json[stage];
+                $("#create-possibility").val(possibilty);
+            })
+
+            $("#saveBtn").click(function () {
+                $("#tranForm").submit();
+            })
+        })
+
+    </script>
+
 
 </head>
 <body>
@@ -128,57 +199,51 @@ request.getContextPath() + "/";
 	<div style="position:  relative; left: 30px;">
 		<h3>创建交易</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
-			<button type="button" class="btn btn-primary">保存</button>
+			<button type="button" id="saveBtn" class="btn btn-primary">保存</button>
 			<button type="button" class="btn btn-default">取消</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>
-	<form class="form-horizontal" role="form" style="position: relative; top: -30px;">
+	<form action="Tran/save.do" id="tranForm" class="form-horizontal" role="form" style="position: relative; top: -30px;">
 		<div class="form-group">
 			<label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionOwner">
+				<select class="form-control" id="create-transactionOwner" name="owner">
                     <option></option>
                     <%for(User u : (List<User>)request.getAttribute("userList")){%>
-                    <option id="<%=u.getId()%>" <%=((User)session.getAttribute("user")).getId().equals(u.getId()) ? "selected":""%> ><%=u.getName()%></option>
+                    <option value="<%=u.getId()%>" <%=((User)session.getAttribute("user")).getId().equals(u.getId()) ? "selected":""%> ><%=u.getName()%></option>
                     <%}%>
 				</select>
 			</div>
 			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-amountOfMoney">
+				<input type="text" class="form-control" id="create-amountOfMoney" name="money">
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-transactionName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-transactionName">
+				<input type="text" class="form-control" id="create-transactionName" name="name">
 			</div>
 			<label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-expectedClosingDate">
+				<input type="text" class="form-control time_down" id="create-expectedClosingDate" name="expectedDate" readonly>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-accountName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-customerName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-accountName" placeholder="支持自动补全，输入客户不存在则新建">
+				<input type="text" class="form-control" name="customerId" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
 			</div>
 			<label for="create-transactionStage" class="col-sm-2 control-label">阶段<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-			  <select class="form-control" id="create-transactionStage">
+			  <select class="form-control" id="create-transactionStage" name="stage">
 			  	<option></option>
-			  	<option>资质审查</option>
-			  	<option>需求分析</option>
-			  	<option>价值建议</option>
-			  	<option>确定决策者</option>
-			  	<option>提案/报价</option>
-			  	<option>谈判/复审</option>
-			  	<option>成交</option>
-			  	<option>丢失的线索</option>
-			  	<option>因竞争丢失关闭</option>
+                  <%for(DicValue u : (List<DicValue>)application.getAttribute("stageList")){%>
+                  <option value="<%=u.getValue()%>"><%=u.getText()%></option>
+                  <%}%>
 			  </select>
 			</div>
 		</div>
@@ -186,70 +251,62 @@ request.getContextPath() + "/";
 		<div class="form-group">
 			<label for="create-transactionType" class="col-sm-2 control-label">类型</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionType">
+				<select class="form-control" id="create-transactionType" name="type">
 				  <option></option>
-				  <option>已有业务</option>
-				  <option>新业务</option>
+                    <%for(DicValue u : (List<DicValue>)application.getAttribute("transactionTypeList")){%>
+                    <option value="<%=u.getValue()%>"><%=u.getText()%></option>
+                    <%}%>
 				</select>
 			</div>
 			<label for="create-possibility" class="col-sm-2 control-label">可能性</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-possibility">
+				<input type="text" class="form-control" id="create-possibility" readonly>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-clueSource" class="col-sm-2 control-label">来源</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-clueSource">
+				<select class="form-control" id="create-clueSource" name="source">
 				  <option></option>
-				  <option>广告</option>
-				  <option>推销电话</option>
-				  <option>员工介绍</option>
-				  <option>外部介绍</option>
-				  <option>在线商场</option>
-				  <option>合作伙伴</option>
-				  <option>公开媒介</option>
-				  <option>销售邮件</option>
-				  <option>合作伙伴研讨会</option>
-				  <option>内部研讨会</option>
-				  <option>交易会</option>
-				  <option>web下载</option>
-				  <option>web调研</option>
-				  <option>聊天</option>
+                    <%for(DicValue u : (List<DicValue>)application.getAttribute("sourceList")){%>
+                    <option value="<%=u.getValue()%>"><%=u.getText()%></option>
+                    <%}%>
 				</select>
 			</div>
 			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findMarketActivity"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-activitySrc">
+				<input type="text" class="form-control" id="create-activitySrc" value="发传单1">
+                <input type="hidden" value="1d62dc2f83aa4e28bf17b2010564b0eb" name="activityId">
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findContacts"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-contactsName">
+				<input type="text" class="form-control" id="create-contactsName" value="李清源">
+                <input type="hidden" value="dc12359bb47e489ba1264a074b052fdf" name="contactsId">
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-describe" class="col-sm-2 control-label">描述</label>
 			<div class="col-sm-10" style="width: 70%;">
-				<textarea class="form-control" rows="3" id="create-describe"></textarea>
+				<textarea class="form-control" rows="3" id="create-describe" name="description"></textarea>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
 			<div class="col-sm-10" style="width: 70%;">
-				<textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
+				<textarea class="form-control" rows="3" id="create-contactSummary" name="contactSummary"></textarea>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-nextContactTime">
+				<input type="text" class="form-control time_up" id="create-nextContactTime" name="nextContactTime" readonly>
 			</div>
 		</div>
 		
